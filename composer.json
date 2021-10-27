@@ -1,0 +1,19 @@
+{
+    "name": "erpclean/common",
+    "description": "Biblioteca base para comunicaçao com a API do ERP Simplificado",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Diego Almeida",
+            "email": "diego.feres82@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ERPClean\\Common\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
