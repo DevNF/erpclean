@@ -1023,6 +1023,58 @@ class Tools
         }
     }
 
+     /**
+     * Função responsável por retornar o token de acesso do contador
+     *
+     * @param array $dados Dados do cadastro do contador e empresa
+     * @param array $params Parametros adicionais para a requisição
+     *
+     * @access public
+     * @return array
+     */
+    public function cadastraTokenContador(array $dados, array $params = []) :array
+    {
+        try {
+
+            if(!isset($dados['name']) || empty($dados['name'])){
+                throw new Exception("Informe o nome do contador", 1);
+            }
+            if(!isset($dados['email']) || empty($dados['email'])){
+                throw new Exception("Informe o e-mail do contador", 1);
+            }
+            if(!isset($dados['cpfcnpj']) || empty($dados['cpfcnpj'])){
+                throw new Exception("Informe o CPF ou CNPJ do contador", 1);
+            }
+            if(!isset($dados['phone']) || empty($dados['phone'])){
+                throw new Exception("Informe o telefone do contador", 1);
+            }
+            if(!isset($dados['name_company']) || empty($dados['name_company'])){
+                throw new Exception("Informe o nome da empresa do contador", 1);
+            }
+            if(!isset($dados['customer_cpfcnpj']) || empty($dados['customer_cpfcnpj'])){
+                throw new Exception("Informe o CPF ou CNPJ da empresa que o contador irá acessar", 1);
+            }
+
+            $dados = $this->post("nfcontador/access-customer", $dados, $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
     /**
      * Execute a GET Request
      *
