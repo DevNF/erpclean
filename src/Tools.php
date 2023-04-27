@@ -7,12 +7,13 @@ use Exception;
 /**
  * Classe Tools
  *
- * Classe responsável pela comunicação com a API Nectar CRM
+ * Classe responsável pela comunicação com a API ERPClean Easy 
  *
  * @category  ERPClean
  * @package   ERPClean\Common\Tools
  * @author    Diego Almeida <diego.feres82 at gmail dot com>
- * @copyright 2021 ERPClean
+ * @author    Call Seven <call.seven at hotmail dot com>
+ * @copyright 2023 ERPClean
  * @license   https://opensource.org/licenses/MIT MIT
  */
 class Tools
@@ -967,6 +968,44 @@ class Tools
         }
     }
 
+    /**
+    * Função responsável por consultar se já existe empresa cadastrada no sistema
+    *
+    * @access public
+    * @return array
+    */
+    public function consultaEmpresaCnpj(string $cnpj, array $params = []): array
+    {
+
+        $params = array_filter($params, function($item) {
+            return $item['name'] !== 'cnpj';
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $params[] = [
+            'name' => 'cnpj',
+            'value' => $cnpj
+        ];
+
+        try {
+            $dados = $this->get("companies/verifycompanyexist", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
     /**
      * Função responsável por consultar um e-mail no sistema
      *
