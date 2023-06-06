@@ -7,7 +7,7 @@ use Exception;
 /**
  * Classe Tools
  *
- * Classe responsável pela comunicação com a API ERPClean Easy 
+ * Classe responsável pela comunicação com a API ERPClean Easy
  *
  * @category  ERPClean
  * @package   ERPClean\Common\Tools
@@ -1006,6 +1006,60 @@ class Tools
             throw new Exception($error, 1);
         }
     }
+
+    /**
+    * Função responsável por consultar logo e trazer a url
+    *
+    * @access public
+    * @param string $cnpj CNPJ a ser consultado
+    * @param array $params Parametros adicionais para a consulta
+    * @return string or null
+    */
+    public function consultaLogo(string $cnpj, array $params = [])
+    {
+        try {
+            $params = array_filter($params, function($item) {
+                return $item['name'] !== 'cnpj';
+            }, ARRAY_FILTER_USE_BOTH);
+
+
+            $params[] = [
+                'name' => 'cnpj',
+                'value' => $cnpj
+            ];
+            $dados = $this->get("companies/verifycompanyexist", $params);
+
+            if ($dados['httpCode'] == 200) {
+
+                $this->config['decode'] = false;
+
+                $company_id = $dados['body']->id;
+
+                $logo = $this->get("companies/$company_id/logo");
+
+                if ($logo['httpCode'] == 200) {
+
+                    return $logo['body'];
+                } else {
+                    return null;
+                }
+
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
     /**
      * Função responsável por consultar um e-mail no sistema
      *
