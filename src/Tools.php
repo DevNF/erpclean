@@ -698,6 +698,130 @@ class Tools
     }
 
     /**
+     * Função responsável por listar as contas
+     *
+     * @param array $params Parametros adicionais para a busca
+     *
+     * @access public
+     * @return array
+     */
+    public function buscaContas(array $params = []) :array
+    {
+        try {
+            $dados = $this->get("installments/accountant", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
+     * Função responsável por listar as categorias
+     *
+     * @param array $params Parametros adicionais para a busca
+     *
+     * @access public
+     * @return array
+     */
+    public function buscaCategorias(array $params = []) :array
+    {
+        try {
+            $dados = $this->get("categories/select", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
+     * Função responsável por listar as pessoas
+     *
+     * @param array $params Parametros adicionais para a busca
+     *
+     * @access public
+     * @return array
+     */
+    public function buscaPessoas(array $params = []) :array
+    {
+        try {
+            $dados = $this->get("persons", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
+     * Função responsável por listar as contas bancárias
+     *
+     * @param array $params Parametros adicionais para a busca
+     *
+     * @access public
+     * @return array
+     */
+    public function buscaContasBancarias(array $params = []) :array
+    {
+        try {
+            $dados = $this->get("accounts", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
      * Função responsável por cadastrar um produto
      *
      * @param array $dados Dados do produto
