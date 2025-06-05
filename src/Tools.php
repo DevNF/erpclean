@@ -728,6 +728,39 @@ class Tools
         }
     }
 
+
+    /**
+     * Função responsável por listar as contas com baixas de notas fiscais
+     *
+     * @param array $params Parametros adicionais para a busca
+     *
+     * @access public
+     * @return array
+     */
+    public function buscaContasComBaixasDeNotasFiscais(array $params = []) :array
+    {
+        try {
+            $dados = $this->get("invoices-payments", $params);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+
     /**
      * Função responsável por listar as categorias
      *
