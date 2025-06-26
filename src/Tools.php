@@ -235,6 +235,35 @@ class Tools
     }
 
     /**
+     * Atualiza os dados de uma empresa
+     *
+     * @access public
+     * @return array
+     */
+    public function atualizaEmpresa(int $companyId, array $data): array
+    {
+        try {
+            $dados = $this->put("systems/companies/{$companyId}", $data);
+
+            if ($dados['httpCode'] == 200) {
+                return $dados;
+            }
+
+            if (isset($dados['body']->message)) {
+                throw new Exception($dados['body']->message, 1);
+            }
+
+            if (isset($dados['body']->errors)) {
+                throw new Exception(implode("\r\n", $dados['body']->errors), 1);
+            }
+
+            throw new Exception(json_encode($dados), 1);
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
      * Atualiza as configurações de uma empresa
      *
      * @access public
@@ -1234,6 +1263,31 @@ class Tools
             ];
 
             $dados = $this->post("companies/verify-email", $dados, $params);
+
+            return $dados;
+        } catch (Exception $error) {
+            throw new Exception($error, 1);
+        }
+    }
+
+    /**
+     * Função responsável por verificar um e-mail no sistema
+     * Retorna os dados da empresa caso o e-mail já esteja cadastrado
+     *
+     * @param string $email E-mail a ser consultado
+     * @param array $params parametros adicionais para a requisição
+     *
+     * @access public
+     * @return array
+     */
+    public function verificaEmail(string $email, array $params = []) :array
+    {
+        try {
+            $dados = [
+                'email' => $email
+            ];
+
+            $dados = $this->post("companies/verifyemailexist", $dados, $params);
 
             return $dados;
         } catch (Exception $error) {
